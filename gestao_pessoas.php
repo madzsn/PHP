@@ -1,36 +1,40 @@
 <?php
-function inserirDadosPessoa($nome, $idade, $rua, $cidade, $numeroTelefone, $descricaoPedido, $valorPedido, $tipoTelefone)
-{
 
-    $conexao = mysqli_connect("localHost", "usuario", "senha", "nomedobanco");
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "gestao_pessoas";
 
-    if (!$conexao) {
-        die("conexão falhou: " . mysqli_connect_error());
-    }
- 
-    mysqli_autocommit($conexao, false);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-    $sqliPessoa = "INSERT INTO pessoas (nome, idade) VALUES ('$nome', $idade)";
-    mysqli_query($conexao, $sqliPessoa);
+if ($conn->connect_error) {
+    die("Conexão falhou: " . $conn->connect_error);
+ }
 
-    $idPessoa = mysqli_insert_id($conexao);
+ $sql = "CREATE TABLE pessoas (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    idade INT(3) NOT NULL,
+    sexo VARCHAR(1)
+ )";
 
-    $sqlEndereco = "INSERT INTO enderecos (rua, cidade, id_pessoa) VALUES ('$rua', '$cidade', $idPessoa)";
-    mysqli_query($conexao, $sqlEndereco);
+if ($conn->query($sql) === TRUE) {
+    echo "Tabela 'pessoas' criada com sucesso";
+ } else {
+    echo "Erro ao criar tabela: " . $conn->error;
+ }
 
-    $sqlTelefone = "INSERT INTO telefones (numero, tipo, id_pessoa) VALUES ('$numeroTelefone', '$tipoTelefone', $idPessoa)";
-    mysqli_query($conexao, $sqlTelefone);
+$sql = "CREATE TABLE telefone (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    numero VARCHAR(20) NOT NULL,
+    tipoTel INT(3) NOT NULL,
+    id_pessoa INT
+ )";
 
-    $sqlPedido = "INSERT INTO pedidos (decricao, valor, id_pessoa) VALUES ('$descricaoPedido', $valorPedido, $idPessoa)";
-    mysqli_query($conexao, $sqlPedido);
-
-    if (mysqli_error($conexao)) {
-        mysqli_rollback($conexao);
-        mysqli_close($conexao);
-        return "erro ao inserir dados: " . mysqli_error($conexao);
-    } else {
-        mysqli_commit($conexao);
-        mysqli_close($conexao);
-        return "dados inseridos com sucesso";
-    }
-}
+$sql = "CREATE TABLE pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100),
+    descricao VARCHAR(255),
+    preco DECIMAL(10,2),
+    quantidade INT
+);
