@@ -31,6 +31,12 @@ $sql = "CREATE TABLE telefone (
     id_pessoa INT
  )";
 
+if ($conn->query($sql) === TRUE) {
+    echo "Tabela 'telefone' criada com sucesso";
+ } else {
+    echo "Erro ao criar tabela: " . $conn->error;
+ }
+
 $sql = "CREATE TABLE pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100),
@@ -38,3 +44,11 @@ $sql = "CREATE TABLE pedidos (
     preco DECIMAL(10,2),
     quantidade INT
 );
+
+if ($conn->query($sql) === TRUE) {
+    echo "Tabela 'pedidos' criada com sucesso";
+ } else {
+    echo "Erro ao criar tabela: " . $conn->error;
+ }
+
+?>
